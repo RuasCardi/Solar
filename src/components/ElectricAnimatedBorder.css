@@ -1,0 +1,21 @@
+
+.electric-animated-border {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin: 0;
+}
+
+.electric-animated-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  /* Nenhum fundo, sombra ou borda-radius aqui! */
+}
+
+.electric-animated-border svg {
+  pointer-events: none;
+  z-index: 2;
+}
