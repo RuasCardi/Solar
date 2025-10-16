@@ -1,92 +1,67 @@
-# React + TypeScript + Vite
+# Simulador de Economia Solar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bem-vindo ao projeto **Simulador de Economia Solar**!
 
-Currently, two official plugins are available:
+Este sistema permite calcular, simular e visualizar o potencial de economia ao instalar energia solar em qualquer região do Brasil, com personalização avançada do kit, simulação de financiamento, comparativo ambiental e exportação de orçamento.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Funcionalidades
 
-## React Compiler
+- **Cálculo por Estado:** Tarifas reais de energia de todos os estados do Brasil (ANEEL 2025).
+- **Personalização do Kit:** Escolha de módulos, inversores, fontes extras (bateria, gerador, híbrido), estrutura, área disponível e inclinação.
+- **Cálculo Geográfico:** Simulação por cidade/CEP, irradiação solar, sombreamento.
+- **Simulação de Financiamento:** Entrada, prazo, juros, cálculo de parcelas e total pago.
+- **Comparativo Ambiental:** CO₂ evitado, árvores equivalentes.
+- **Gráficos Interativos:** Economia acumulada, payback, lucro ao longo dos anos.
+- **Exportação:** Geração de orçamento em PDF, integração WhatsApp, contato comercial.
+- **Dark Mode e Multi-idioma:** Experiência visual moderna e acessível.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Como usar
 
-## Expanding the ESLint configuration
+1. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
+2. **Inicie o projeto:**
+   ```bash
+   npm run dev
+   ```
+3. **Acesse no navegador:**
+   [http://localhost:5173](http://localhost:5173)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Estrutura do Projeto
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- `src/components/SimuladorEconomiaSolar.tsx`: Componente principal do simulador.
+- `src/`: Demais componentes, estilos e utilitários.
+- `public/`: Arquivos estáticos.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Personalização
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Adicione novos módulos, inversores, baterias ou geradores nos arrays do arquivo `SimuladorEconomiaSolar.tsx`.
+- Ajuste tarifas, perfis ou textos conforme sua necessidade.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Exportação e Integração
 
-export default defineConfig([
-## Landing Page de Portfólio
-  {
-Landing page moderna, clean e responsiva feita com React, TypeScript, Vite, Styled Components e animações com Framer Motion.
-    files: ['**/*.{ts,tsx}'],
-### Recursos
-- Design minimalista e responsivo
-- Animações suaves e modernas
-- Estrutura pronta para adicionar seus projetos
-- Fácil customização de estilos e conteúdo
-    extends: [
-### Scripts
-      // Other configs...
-```bash
-# Instalar dependências
-npm install
-      // Enable lint rules for React
-# Rodar em modo desenvolvimento
-npm run dev
-      reactX.configs['recommended-typescript'],
-# Build para produção
-npm run build
-```
-      // Enable lint rules for React DOM
-### Estrutura
-- `src/App.tsx`: Landing page principal
-- `src/assets/`: Imagens e ícones
-- `src/`: Componentes e estilos globais
-      reactDom.configs.recommended,
+- Gere orçamento em PDF com um clique.
+- Envie dados direto para WhatsApp ou solicite contato comercial.
+
+## Dúvidas Frequentes
+
+- O sistema funciona em dias nublados? Sim, mas com menor geração.
+- Precisa de manutenção? Baixa, apenas limpeza e inspeção anual.
+- Posso zerar a conta de luz? Na maioria dos casos, sim.
+- Qual a vida útil dos equipamentos? Módulos: 25 anos, inversores: 8-12 anos.
+- O que é payback? Tempo para o investimento se pagar com a economia gerada.
+
+## Contribuição
+
+Pull requests são bem-vindos! Sinta-se à vontade para sugerir melhorias, novas funcionalidades ou correções.
+
+## Licença
+
+Este projeto é open source e pode ser utilizado livremente.
+
 ---
-    ],
-Feito com ♥ por Seu Nome
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+
+**Desenvolvido por RuasCardi e colaboradores.**
+
+Dúvidas, sugestões ou integração comercial? Use o WhatsApp ou o botão de contato no simulador.
