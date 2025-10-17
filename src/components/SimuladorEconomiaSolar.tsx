@@ -136,8 +136,8 @@ const SimuladorEconomiaSolar: React.FC = () => {
   const [areaDisponivel, setAreaDisponivel] = useState('');
   const [inclinacao, setInclinacao] = useState('');
   const [estrutura, setEstrutura] = useState('telhado');
-  const [bateriaIdx, setBateriaIdx] = useState(0);
-  const [geradorIdx, setGeradorIdx] = useState(0);
+  const [bateriaIdx] = useState(0);
+  const [geradorIdx] = useState(0);
 
   // Campos geográficos
   const [cidade, setCidade] = useState('');
@@ -260,11 +260,45 @@ const SimuladorEconomiaSolar: React.FC = () => {
     transition: 'all 0.3s',
   } as React.CSSProperties;
 
+  // Botões: cores com melhor contraste para dark e light mode
+  const toggleActiveBg = darkMode ? '#f59e0b' : '#ffd54f'; // amarelo mais vivo
+  const toggleActiveColor = '#111';
+  const toggleInactiveBg = darkMode ? '#2b2b2b' : '#eee';
+  const toggleInactiveColor = darkMode ? '#d1d5db' : '#444';
+  const toggleCommon: React.CSSProperties = { flex: 1, border: 'none', borderRadius: 6, padding: 8, fontWeight: '700', cursor: 'pointer', transition: 'all 0.18s' };
+
   return (
     <div style={{ background: darkMode ? '#181818' : '#f4f6fa', minHeight: '100vh', transition: 'all 0.3s' }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, padding: 16 }}>
-        <button onClick={() => setDarkMode(d => !d)}>{darkMode ? t(idioma, 'claro') : t(idioma, 'dark')}</button>
-        <select value={idioma} onChange={e => setIdioma(e.target.value as any)}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, padding: 16, alignItems: 'center' }}>
+        <button
+          onClick={() => setDarkMode(d => !d)}
+          style={{
+            background: darkMode ? '#fff' : '#111',
+            color: darkMode ? '#111' : '#fff',
+            border: 'none',
+            padding: '8px 12px',
+            borderRadius: 8,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+            fontWeight: 700,
+          }}
+          aria-label="Toggle theme"
+        >
+          {darkMode ? t(idioma, 'claro') : t(idioma, 'dark')}
+        </button>
+        <select
+          value={idioma}
+          onChange={e => setIdioma(e.target.value as any)}
+          style={{
+            background: darkMode ? '#111' : '#fff',
+            color: darkMode ? '#fff' : '#111',
+            borderRadius: 8,
+            border: '1px solid #ccc',
+            padding: '6px 8px',
+            fontWeight: 700,
+          }}
+          aria-label="Idioma"
+        >
           <option value="pt">PT</option>
           <option value="en">EN</option>
           <option value="es">ES</option>
@@ -273,8 +307,26 @@ const SimuladorEconomiaSolar: React.FC = () => {
       <div style={cardStyle}>
         <h2 style={{ marginBottom: 16, color: darkMode ? '#ffe066' : '#222' }}>{t(idioma, 'simulador')}</h2>
         <div style={{ marginBottom: 12, display: 'flex', gap: 8 }}>
-          <button onClick={() => setTipo('kwh')} style={{ flex: 1, background: tipo === 'kwh' ? '#ffe066' : '#eee', border: 'none', borderRadius: 6, padding: 8, fontWeight: 'bold', cursor: 'pointer' }} title="Informe o consumo em kWh, disponível na conta de luz">kWh</button>
-          <button onClick={() => setTipo('valor')} style={{ flex: 1, background: tipo === 'valor' ? '#ffe066' : '#eee', border: 'none', borderRadius: 6, padding: 8, fontWeight: 'bold', cursor: 'pointer' }} title="Informe o valor médio da conta em reais">R$</button>
+          <button
+            onClick={() => setTipo('kwh')}
+            style={{
+              ...toggleCommon,
+              background: tipo === 'kwh' ? toggleActiveBg : toggleInactiveBg,
+              color: tipo === 'kwh' ? toggleActiveColor : toggleInactiveColor,
+              boxShadow: tipo === 'kwh' ? '0 6px 18px rgba(0,0,0,0.12)' : 'none'
+            }}
+            title="Informe o consumo em kWh, disponível na conta de luz"
+          >kWh</button>
+          <button
+            onClick={() => setTipo('valor')}
+            style={{
+              ...toggleCommon,
+              background: tipo === 'valor' ? toggleActiveBg : toggleInactiveBg,
+              color: tipo === 'valor' ? toggleActiveColor : toggleInactiveColor,
+              boxShadow: tipo === 'valor' ? '0 6px 18px rgba(0,0,0,0.12)' : 'none'
+            }}
+            title="Informe o valor médio da conta em reais"
+          >R$</button>
         </div>
         <div style={{ marginBottom: 12 }}>
           <label>{tipo === 'kwh' ? t(idioma, 'consumo') : t(idioma, 'valor')}<br />

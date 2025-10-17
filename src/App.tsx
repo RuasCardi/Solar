@@ -1,4 +1,64 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+// NAVBAR FIXA
+const Navbar = styled.nav`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 62px;
+  background: rgba(255,255,255,0.97);
+  box-shadow: 0 2px 12px 0 rgba(60,72,100,0.07);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const NavList = styled.ul`
+  display: flex;
+  gap: 2.2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+`;
+const NavItem = styled.li``;
+const NavLink = styled.a`
+  color: #0891b2;
+  font-weight: 700;
+  font-size: 1.08rem;
+  text-decoration: none;
+  padding: 8px 0;
+  border-bottom: 2px solid transparent;
+  transition: border 0.2s, color 0.2s;
+  &:hover, &.active {
+    color: #fbbf24;
+    border-bottom: 2px solid #fbbf24;
+  }
+`;
+
+// BOTÃO FLUTUANTE PARA VOLTAR AO TOPO
+const ScrollTopButton = styled.button`
+  position: fixed;
+  right: 28px;
+  bottom: 32px;
+  z-index: 120;
+  background: #fbbf24;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  box-shadow: 0 2px 12px 0 rgba(60,72,100,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: background 0.2s, opacity 0.2s;
+  &:hover {
+    background: #0891b2;
+    opacity: 1;
+  }
+`;
 import styled, { createGlobalStyle } from 'styled-components';
 import { motion } from 'framer-motion';
 import {
@@ -13,17 +73,31 @@ import {
   Cell,
   Legend
 } from 'recharts';
-import ElectricBorder from './components/ElectricBorder';
+
 import SimuladorEconomiaSolar from './components/SimuladorEconomiaSolar';
+
+// Wrapper decorativo simples para substituir o ElectricBorder removido
+const DecorativeBorder: React.FC<{ color?: string, thickness?: number, speed?: number, children?: React.ReactNode }> = ({ color = '#52f99f', thickness = 2, children }) => {
+  return (
+    <div style={{ padding: 4, borderRadius: 12, boxShadow: `0 0 0 ${thickness}px ${color}22 inset`, transition: 'transform 0.3s' }}>
+      {children}
+    </div>
+  );
+};
 
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', Arial, Helvetica, sans-serif;
-    background: #f8fafc;
-    color: #222;
+    background: #f8fafc !important; /* força tema claro por padrão */
+    color: #222 !important;
     box-sizing: border-box;
+  }
+  /* Forçar elementos que possam ter cores inline escuras a usar variações claras quando possível */
+  .force-light, .force-light * {
+    background-color: transparent !important;
+    color: inherit !important;
   }
 `;
 
@@ -406,54 +480,81 @@ const clients = [
 
 // COMPONENTE PRINCIPAL
 function App() {
+  // Para mostrar/esconder botão de scroll top
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  const stats = [
+    {
+      number: 'Até 95%',
+      desc: (<span>de economia comprovada na conta de luz <span style={{ color: '#0891b2', fontWeight: 600 }}>(ANEEL, 2024)</span></span>),
+    },
+    {
+      number: '+25 anos',
+      desc: (<span>de vida útil dos painéis com garantia internacional</span>),
+    },
+    {
+      number: '0%',
+      desc: (<span>de emissão de CO₂ durante a geração <span style={{ color: '#0891b2', fontWeight: 600 }}>(IEA, 2023)</span></span>),
+    },
+    {
+      number: '+15%',
+      desc: (<span>de valorização média do imóvel após instalação <span style={{ color: '#0891b2', fontWeight: 600 }}>(FGV, 2024)</span></span>),
+    }
+  ];
   return (
     <>
       <GlobalStyle />
-      <Container>
-        {/* HERO SECTION */}
-        <Hero>
-          <HeroImage src="https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?auto=format&fit=crop&w=800&q=80" alt="Painel solar fotovoltaico isolado" />
+      <Navbar>
+        <NavList>
+          <NavItem><NavLink href="#hero">Início</NavLink></NavItem>
+          <NavItem><NavLink href="#impacto">Impacto</NavLink></NavItem>
+          <NavItem><NavLink href="#graficos">Gráficos</NavLink></NavItem>
+          <NavItem><NavLink href="#beneficios">Benefícios</NavLink></NavItem>
+          <NavItem><NavLink href="#historia">História</NavLink></NavItem>
+          <NavItem><NavLink href="#sobre">Sobre</NavLink></NavItem>
+          <NavItem><NavLink href="#clientes">Clientes</NavLink></NavItem>
+          <NavItem><NavLink href="#contato">Contato</NavLink></NavItem>
+        </NavList>
+      </Navbar>
+      <Container style={{ paddingTop: 62 }}>
+  {/* HERO SECTION */}
+  <Hero id="hero">
+          <HeroImage src="/images/download.jpeg" alt="Painéis solares instalados" />
           <HeroTitle>Energia Solar para um Futuro Sustentável</HeroTitle>
           <HeroSubtitle>Economize, valorize seu imóvel e preserve o planeta com soluções solares inteligentes.</HeroSubtitle>
           <HeroCTA href="#contato">Solicite um orçamento</HeroCTA>
         </Hero>
 
-        {/* ESTATÍSTICAS PROFISSIONAIS */}
-        <StatsSection style={{ background: 'linear-gradient(120deg, #e0e7ef 0%, #f1f5f9 100%)', boxShadow: '0 4px 24px 0 rgba(60,72,100,0.07)' }}>
+  {/* ESTATÍSTICAS PROFISSIONAIS */}
+  <StatsSection id="impacto" style={{ background: 'linear-gradient(120deg, #e0e7ef 0%, #f1f5f9 100%)', boxShadow: '0 4px 24px 0 rgba(60,72,100,0.07)' }}>
           <h2 style={{ color: '#0891b2', fontWeight: 900, fontSize: '2rem', marginBottom: '2.2rem', letterSpacing: '-1px' }}>
             Impacto Real da Energia Solar
           </h2>
           <StatsGrid>
-            {[{
-              number: 'Até 95%',
-              desc: <>de economia comprovada na conta de luz <span style={{ color: '#0891b2', fontWeight: 600 }}>(ANEEL, 2024)</span></>,
-            }, {
-              number: '+25 anos',
-              desc: <>de vida útil dos painéis com garantia internacional</>,
-            }, {
-              number: '0%',
-              desc: <>de emissão de CO₂ durante a geração <span style={{ color: '#0891b2', fontWeight: 600 }}>(IEA, 2023)</span></>,
-            }, {
-              number: '+15%',
-              desc: <>de valorização média do imóvel após instalação <span style={{ color: '#0891b2', fontWeight: 600 }}>(FGV, 2024)</span></>,
-            }].map((stat, idx) => (
-              <ElectricBorder key={idx} color="#52f99f" thickness={2} speed={1.2}>
+            {stats.map((stat, idx) => (
+              <DecorativeBorder key={idx} color="#52f99f" thickness={2}>
                 <StatCard>
                   <StatNumber>{stat.number}</StatNumber>
                   <StatDesc>{stat.desc}</StatDesc>
                 </StatCard>
-              </ElectricBorder>
+              </DecorativeBorder>
             ))}
           </StatsGrid>
         </StatsSection>
 
-        {/* GRÁFICOS PROFISSIONAIS */}
-        <StatsSection style={{ background: '#fff', boxShadow: '0 4px 24px 0 rgba(60,72,100,0.07)' }}>
+  {/* GRÁFICOS PROFISSIONAIS */}
+  <StatsSection id="graficos" style={{ background: '#fff', boxShadow: '0 4px 24px 0 rgba(60,72,100,0.07)' }}>
           <h2 style={{ color: '#0891b2', fontWeight: 900, fontSize: '1.7rem', marginBottom: '2rem', letterSpacing: '-1px' }}>
             Economia e Redução de Consumo: Dados Reais
           </h2>
           <div style={{ width: '100%', maxWidth: 1000, display: 'flex', flexWrap: 'wrap', gap: 40, justifyContent: 'center' }}>
-            <ElectricBorder color="#52f99f" thickness={2} speed={1.2}>
+            <DecorativeBorder color="#52f99f" thickness={2}>
               <div style={{ flex: 1, minWidth: 340, background: 'linear-gradient(120deg, #f1f5f9 0%, #e0e7ef 100%)', borderRadius: 18, boxShadow: '0 2px 16px 0 rgba(60,72,100,0.10)', padding: 32 }}>
                 <h3 style={{ color: '#fbbf24', fontWeight: 800, fontSize: '1.15rem', marginBottom: 16, letterSpacing: '-0.5px' }}>Economia anual estimada (R$)</h3>
                 <ResponsiveContainer width="100%" height={240}>
@@ -474,8 +575,8 @@ function App() {
                   Fonte: Associação Brasileira de Energia Solar (ABSOLAR), 2024
                 </p>
               </div>
-            </ElectricBorder>
-            <ElectricBorder color="#52f99f" thickness={2} speed={1.2}>
+            </DecorativeBorder>
+            <DecorativeBorder color="#52f99f" thickness={2}>
               <div style={{ flex: 1, minWidth: 340, background: 'linear-gradient(120deg, #f1f5f9 0%, #e0e7ef 100%)', borderRadius: 18, boxShadow: '0 2px 16px 0 rgba(60,72,100,0.10)', padding: 32 }}>
                 <h3 style={{ color: '#fbbf24', fontWeight: 800, fontSize: '1.15rem', marginBottom: 16, letterSpacing: '-0.5px' }}>Consumo antes x depois (kWh/mês)</h3>
                 <ResponsiveContainer width="100%" height={240}>
@@ -495,28 +596,28 @@ function App() {
                   Redução média de consumo residencial após instalação solar (ABSOLAR, 2024)
                 </p>
               </div>
-            </ElectricBorder>
+            </DecorativeBorder>
           </div>
         </StatsSection>
 
-        {/* BENEFÍCIOS */}
-        <BenefitsSection>
+  {/* BENEFÍCIOS */}
+  <BenefitsSection id="beneficios">
           <h2 style={{ color: '#0891b2', fontWeight: 800, fontSize: '2rem', marginBottom: '2rem' }}>Por que escolher energia solar?</h2>
           <BenefitsGrid>
             {benefits.map((b) => (
-              <ElectricBorder key={b.title} color="#52f99f" thickness={2} speed={1.2}>
+              <DecorativeBorder key={b.title} color="#52f99f" thickness={2}>
                 <BenefitCard>
                   <BenefitIcon src={b.icon} alt={b.title} />
                   <BenefitTitle>{b.title}</BenefitTitle>
                   <BenefitDesc>{b.desc}</BenefitDesc>
                 </BenefitCard>
-              </ElectricBorder>
+              </DecorativeBorder>
             ))}
           </BenefitsGrid>
         </BenefitsSection>
 
-        {/* HISTÓRIA DO PAINEL SOLAR */}
-        <AboutSection style={{ background: 'linear-gradient(120deg, #fffbe6 0%, #e3f6fd 100%)', marginBottom: 0 }}>
+  {/* HISTÓRIA DO PAINEL SOLAR */}
+  <AboutSection id="historia" style={{ background: 'linear-gradient(120deg, #fffbe6 0%, #e3f6fd 100%)', marginBottom: 0 }}>
           <AboutContent>
             <h2 style={{ color: '#fbbf24', fontWeight: 900, fontSize: '2rem', marginBottom: '1.2rem', letterSpacing: '-1px' }}>
               Como o Painel Solar foi Inventado?
@@ -540,23 +641,23 @@ function App() {
                 <li style={{ marginBottom: 10 }}><b>O Brasil</b> está entre os 10 países que mais instalam energia solar no mundo.</li>
               </ul>
             </div>
-            <AboutImage src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Cientista analisando célula solar" />
+            <AboutImage src="/images/images.jpeg" alt="Cientista analisando célula solar" />
           </AboutContent>
         </AboutSection>
 
-        {/* SOBRE */}
-        <AboutSection>
+  {/* SOBRE */}
+  <AboutSection id="sobre">
           <AboutContent>
             <h2 style={{ color: '#fbbf24', fontWeight: 800, fontSize: '2rem', marginBottom: '1.2rem' }}>Sobre a SolarPrime</h2>
             <p style={{ color: '#222', fontSize: '1.15rem', marginBottom: '1.5rem' }}>
               Somos especialistas em projetos, instalação e manutenção de sistemas fotovoltaicos residenciais, comerciais e rurais. Atendemos todo o Brasil com tecnologia de ponta, equipe qualificada e compromisso com o meio ambiente.
             </p>
-            <AboutImage src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80" alt="Painéis solares instalados" />
+            <AboutImage src="/images/s.jpeg" alt="Painéis solares instalados" />
           </AboutContent>
         </AboutSection>
 
-        {/* CLIENTES */}
-        <ClientsSection>
+  {/* CLIENTES */}
+  <ClientsSection id="clientes">
           <h2 style={{ color: '#0891b2', fontWeight: 700, marginBottom: '0.5rem' }}>Clientes que confiam</h2>
           <ClientsGrid>
             {clients.map((client) => (
@@ -584,8 +685,8 @@ function App() {
         {/* Simulador de economia solar */}
         <SimuladorEconomiaSolar />
 
-        {/* CONTATO */}
-        <ContactSection id="contato">
+  {/* CONTATO */}
+  <ContactSection id="contato">
           <ContactTitle>Fale com um especialista solar</ContactTitle>
           <ContactForm onSubmit={e => { e.preventDefault(); alert('Mensagem enviada!'); }}>
             <Input type="text" placeholder="Seu nome" required />
@@ -599,7 +700,16 @@ function App() {
           © {new Date().getFullYear()} SolarPrime Energia. Todos os direitos reservados.
         </Footer>
       </Container>
-    </>
+      {showScrollTop && (
+        <ScrollTopButton onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Voltar ao topo">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="19" cy="19" r="17" fill="#fbbf24" />
+            <path d="M19 28V12" stroke="#fff" strokeWidth="3.5" strokeLinecap="round"/>
+            <path d="M13 18L19 12L25 18" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </ScrollTopButton>
+      )}
+  </>
   );
 }
 
@@ -635,6 +745,28 @@ const timelineData = [
 // COMPONENTE DA LINHA DO TEMPO INTERATIVA
 function TimelineInteractive() {
   const [activeIdx, setActiveIdx] = React.useState(0);
+  const curiosidades = [
+    [
+      'O efeito fotovoltaico é a base dos painéis solares modernos.',
+      'Becquerel tinha apenas 19 anos quando fez a descoberta!'
+    ],
+    [
+      'A primeira célula solar tinha eficiência de apenas 6%.',
+      'Hoje, laboratórios já passam de 47% de eficiência.'
+    ],
+    [
+      'A crise do petróleo fez o preço da energia disparar.',
+      'Esse evento acelerou pesquisas em fontes renováveis.'
+    ],
+    [
+      'O maior parque solar do mundo está na Índia.',
+      'Ele pode abastecer mais de 700 mil casas.'
+    ],
+    [
+      'O Brasil está entre os 10 países que mais instalam energia solar.',
+      'O setor solar brasileiro cresce mais de 50% ao ano.'
+    ],
+  ];
   return (
     <div style={{ width: '100%', overflowX: 'auto', margin: '2.5rem 0 2.5rem 0', paddingBottom: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', minWidth: 600, justifyContent: 'center', gap: 0 }}>
@@ -644,16 +776,21 @@ function TimelineInteractive() {
               <button
                 onClick={() => setActiveIdx(idx)}
                 style={{
-                  width: 32,
-                  height: 32,
+                  width: 28,
+                  height: 28,
                   borderRadius: '50%',
                   background: idx === activeIdx ? '#fbbf24' : '#e0e7ef',
                   border: '3px solid #fbbf24',
                   marginBottom: 8,
                   cursor: 'pointer',
                   transition: 'background 0.2s',
-                  outline: idx === activeIdx ? '2px solid #0891b2' : 'none',
+                  outline: 'none',
+                  outlineOffset: 0,
+                  boxSizing: 'border-box',
                   boxShadow: idx === activeIdx ? '0 2px 8px 0 rgba(60,72,100,0.10)' : 'none',
+                  display: 'inline-block',
+                  verticalAlign: 'middle',
+                  padding: 0,
                 }}
                 aria-label={item.title}
               />
@@ -668,6 +805,11 @@ function TimelineInteractive() {
       <div style={{ marginTop: 28, background: '#fff', borderRadius: 12, boxShadow: '0 2px 16px 0 rgba(60,72,100,0.08)', padding: '1.5rem 1.2rem', maxWidth: 500, marginLeft: 'auto', marginRight: 'auto', minHeight: 120 }}>
         <h4 style={{ color: '#0891b2', fontWeight: 800, fontSize: 18, marginBottom: 8 }}>{timelineData[activeIdx].title}</h4>
         <p style={{ color: '#222', fontSize: 15, margin: 0 }}>{timelineData[activeIdx].desc}</p>
+        <ul style={{ color: '#0a0a0a', fontSize: 14, marginTop: 12, paddingLeft: 18 }}>
+          {curiosidades[activeIdx].map((cur, i) => (
+            <li key={i} style={{ marginBottom: 6 }}>{cur}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
